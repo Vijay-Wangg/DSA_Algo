@@ -1,0 +1,22 @@
+//agar smjh na aaye kaise aur kanha isko use krna hai ..to ye question dekh lo,,smjh aa jayega
+//https://www.codechef.com/problems/MAXSUMPERM
+
+
+void solve(){
+  lln n,q;
+  cin>>n>>q;
+  vector<lln>rangeFre(n+2,0);    //creating +2  beacuse last ke aage hmko update krne ki aawashykta hogi
+  for(int i=0;i<q;i++){
+    lln l;  //from
+    lln r;   //to
+    cin>>l>>r;    //range 
+    rangeFre[l]++;
+    rangeFre[r+1]--;
+
+  }
+  for(int i=1;i<n+2;i++){
+    rangeFre[i]+=rangeFre[i-1];           //every range element kitna baar repeate ho rha hai,,,jaise 2-6, 5-10  to dono me ,5,6 do baar aayega aur baki sb ek ek baar
+  }                                            
+  
+
+}
