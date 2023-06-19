@@ -1,0 +1,12 @@
+//https://practice.geeksforgeeks.org/problems/rearrange-an-array-with-o1-extra-space3142/1
+see this question as reference in case of any doubt
+
+let at ith index value is 'a' and wanted to make it 'b' but in later value 'a' will be needed in that case
+
+m= max_element+1
+
+at_ith_index=a+b*m;
+
+when value 'a' is needed ...use ith_index_value % m
+and when 'b' is needed ...use ith_index_value/m
+
