@@ -1,0 +1,5 @@
+in case of addition
+(a+b)%mod--->>>use this to avoid wrong ans---->>(a%mod +b % mod) %mod;
+
+in case of substraction
+(a-b)%mod--->>>use this to avoid wrong ans---->>(a-b+mod) %mod;
