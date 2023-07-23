@@ -1,0 +1,58 @@
+const int N=1e5+2;
+ int arr[N];
+ int seg_tree[4*N];
+void build_seg_tree(int node,int start,int end){
+    if(start==end){
+        seg_tree[node]=arr[start];
+        return;
+    }
+    int mid=start+(end-start)/2;
+    build_seg_tree(2*node,start,mid); //left child
+    build_seg_tree(2*node+1,mid+1,end);  //right child formation
+    seg_tree[node]=seg_tree[2*node]+seg_tree[2*node+1];  //storign the sum of its children  //if maximum is rquired ,we have been stored max
+    return;
+}
+int querry(int node,int start,int end,int l,int r){
+
+    //completely outside
+    if(start>r||end<l) return 0;
+     
+     //completely inside
+    if(l<=start&&end<=r) return seg_tree[node];
+
+
+    //partially inside
+
+    int mid=start+(end-start)/2;
+    int left=querry(2*node,start,mid,l,r);
+    int right=querry(2*node+1,mid+1,end,l,r);
+
+    return left+right;
+}
+void update(int node,int start,int end,int ind,int val){
+    if(start==end){
+        arr[start]=val;
+        seg_tree[node]=val;
+        return;
+    }
+
+    //ind kidhar lie krega wo dekhna padega 
+    int mid=start+(end-start)/2;
+    if(ind<=mid)
+        update(2*node,start,mid,ind,val);
+    else 
+         update(2*node+1,mid+1,end,ind,val);
+
+   seg_tree[node]=seg_tree[2*node]+seg_tree[2*node+1];
+}
+void chalKhatamKrBhai(){
+    int n; cin>>n;
+    for(int i=0;i<n;i++) cin>>arr[i];
+    build_seg_tree(1,0,n-1);  //node, start, end
+   // sum from ind 2 to 6
+    cout<<querry(1,0,n-1,2,6)<<endl;  //root node, start, end,queLeft,queRight
+    update(1,0,n-1,6,10);  //at ind 6 updatwe its value to 10
+    cout<<querry(1,0,n-1,2,6)<<endl;
+
+} 
+ 
