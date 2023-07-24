@@ -1,0 +1,72 @@
+
+#include<bits/stdc++.h>
+using namespace std;
+#define lln long long int
+const int N=1e5+3;
+lln arr[N];
+lln segTree[4*N];
+
+void buid_segTree(int node,int s,int e){
+    if(s==e){
+        segTree[node]=arr[s];
+        return;
+    }
+    int mid=s+(e-s)/2;
+    buid_segTree(2*node,s,mid);
+    buid_segTree(2*node+1,mid+1,e);
+    segTree[node]=segTree[2*node]+segTree[2*node+1];
+    return;
+}
+
+lln query(int node,int s,int e,int l,int r){
+   //completey outside
+   if(s>r||e<l) return 0;
+   
+   //completely inside
+   if(l<=s&&r>=e) return segTree[node];
+   
+   //partially inside
+   
+   int mid=s+(e-s)/2;
+   lln leftChild=query(2*node,s,mid,l,r);
+   lln rightChild=query(2*node+1,mid+1,e,l,r);
+   return leftChild+rightChild;
+}
+
+void update(int node,int s,int e,int ind,int val){
+    if(s==e){
+        arr[s]=val;
+        segTree[node]=val;
+        return;
+    }
+    
+    int mid=s+(e-s)/2;
+    if(ind<=mid)
+    update(2*node,s,mid,ind,val);
+    else update(2*node+1,mid+1,e,ind,val);
+    
+    segTree[node]=segTree[2*node]+segTree[2*node+1];
+    return;
+}
+
+int main(){
+    int n,m;
+    cin>>n>>m;
+    for(int i=0;i<n;i++) cin>>arr[i];
+    buid_segTree(1,0,n-1);
+    while(m--){
+        int type;
+        cin>>type;
+        if(type==1){
+            int ind,val;
+            cin>>ind>>val;
+            update(1,0,n-1,ind,val);
+        }else{
+            int l,r;
+            cin>>l>>r;
+            cout<<query(1,0,n-1,l,r-1)<<endl;
+        }
+    }
+    
+}
+

@@ -1,0 +1,111 @@
+
+#include<bits/stdc++.h>
+using namespace std;
+#define lln long long int
+const int N=1e5+3;
+lln arr[N];
+pair<lln,lln> segTree[4*N];
+
+void build_segTree(int node,int s,int e){
+    if(s==e){
+        segTree[node].first=arr[s];
+        segTree[node].second=1ll;
+        return;
+    }
+    int mid=s+(e-s)/2;
+    build_segTree(2*node,s,mid);
+    build_segTree(2*node+1,mid+1,e);
+    
+    if(segTree[2*node].first<segTree[2*node+1].first){
+              segTree[node].first=segTree[2*node].first;
+              segTree[node].second=segTree[2*node].second;
+    }
+    else if(segTree[2*node].first>segTree[2*node+1].first){
+              segTree[node].first=segTree[2*node+1].first;
+              segTree[node].second=segTree[2*node+1].second;
+    }
+    else{
+           segTree[node].first=segTree[2*node+1].first;
+           segTree[node].second=segTree[2*node+1].second+segTree[2*node].second;
+    }
+    return;
+}
+
+pair<lln,lln> query(int node,int s,int e,int l,int r){
+   //completey outside
+   if(s>r||e<l) return {INT_MAX,-1};
+   
+   //completely inside
+   if(l<=s&&r>=e) return segTree[node];
+   
+   //partially inside
+   int mid=s+(e-s)/2;
+   pair<lln,lln>q1=query(2*node,s,mid,l,r);
+   pair<lln,lln>q2=query(2*node+1,mid+1,e,l,r);
+
+   pair<lln,lln>ans;
+    if(q1.first<q2.first){
+              ans=q1;
+    }
+    else if(q1.first>q2.first){
+              ans=q2;
+    }
+    else{
+           ans.first=q1.first;
+           ans.second=q1.second+q2.second;
+    }
+    return ans;
+}
+
+void update(int node,int s,int e,int ind,lln val){
+    if(s==e){
+        arr[s]=val;
+        segTree[node].first=val;
+        segTree[node].second=1ll;
+        return;
+    }
+    
+    int mid=s+(e-s)/2;
+    if(ind<=mid)
+    update(2*node,s,mid,ind,val);
+    else update(2*node+1,mid+1,e,ind,val);
+    
+   
+     if(segTree[2*node].first<segTree[2*node+1].first){
+              segTree[node].first=segTree[2*node].first;
+              segTree[node].second=segTree[2*node].second;
+    }
+    else if(segTree[2*node].first>segTree[2*node+1].first){
+              segTree[node].first=segTree[2*node+1].first;
+              segTree[node].second=segTree[2*node+1].second;
+    }
+    else{
+           segTree[node].first=segTree[2*node+1].first;
+           segTree[node].second=segTree[2*node+1].second+segTree[2*node].second;
+    }
+    return;
+}
+
+int main(){
+    int n,m;
+    cin>>n>>m;
+    for(int i=0;i<n;i++) cin>>arr[i];
+    build_segTree(1,0,n-1);
+    while(m--){
+        int type;
+        cin>>type;
+        if(type==1){
+            lln ind,val;
+            cin>>ind>>val;
+            update(1,0,n-1,ind,val);
+        }else{
+            int l,r;
+            cin>>l>>r;
+            pair<lln,lln>mini=query(1,0,n-1,l,r-1);
+            cout<<mini.first<<" "<<mini.second<<endl;
+            
+        }
+    }
+    
+}
+
