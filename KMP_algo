@@ -1,0 +1,44 @@
+
+//abdul bari sir help
+void kmp(){
+    unordered_map<char,int>memo;
+     
+    string pattern="ababd";
+
+    //cin>>pattern;
+    vector<int>pi(pattern.size(),-1);
+    
+     string s="ababcabcababd";
+    //cin>>s;
+
+    for(int i=0;i<pattern.size();i++){
+        if(memo.find(pattern[i])==memo.end()){
+            memo[pattern[i]]=i;
+            //cout<<i<<endl;
+        }
+        else{
+            pi[i]=memo[pattern[i]];
+           // cout<<pi[i]<<endl;
+        }
+    }
+
+   
+   
+    // for(int i=0;i<pi.size();i++) cout<<pi[i];
+    int j=-1;
+
+    for(int i=0;i<s.size();i++){
+        char c=s[i];
+        if(c==pattern[j+1]) j++;
+        else {
+            if(j!=-1) {
+                j=pi[j], i--;}
+        }
+      //cout<<j<<endl;
+        if(j==pattern.size()-1){
+            cout<<(i-pattern.size())<<" "<<i<<endl;
+            break;
+
+        }
+    }
+ }
