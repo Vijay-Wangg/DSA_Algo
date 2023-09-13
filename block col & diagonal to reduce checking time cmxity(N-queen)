@@ -1,0 +1,84 @@
+how to block col & diagonal to reduce checking time cmxity(N-queen)
+
+
+//create a array for col (such as we create visited array to check whether it is visited or not)
+
+vector<int>visCol(col.size(),0);
+
+//similarly create one array for normal diagonal and one for reversed diagonal ,and its size would be 2*(board.size()-1)
+vector<int>normalDiagonal( 2*(board.size()-1),0);   .//here index would be like ---row+col 
+vector<int>reversedDiagonal (2*(board.size()-1),0);   //here index would be like -----row-col+(board.size()-1) ----//to avoid -negative index
+
+
+//refer Nqueen problem sol (most optimized one) you will get some insights in any confusion
+
+
+
+
+
+
+
+
+class Solution {
+public:
+    vector<int>col;
+    vector<int>normalDiagonal;
+    vector<int>reverseDiagonal;
+    vector<vector<string>> solveNQueens(int n) {
+        col.resize(n+1,0);
+        normalDiagonal.resize(2*n-1,0);
+        reverseDiagonal.resize(2*n-1,0);
+        if(n==1) return {{"Q"}};
+        if(n==2||n==3) return {};
+        vector<vector<string>>ans;
+        string s(n,'.');
+       vector<string>temp(n,s);
+        recBacktrack( n,ans,0,temp);
+        return ans ;
+    }
+    private:  void recBacktrack(int &n,vector<vector<string>>&ans,int r,vector<string> &ansSoFar){
+        if(r>=n){
+            ans.push_back(ansSoFar);
+            return;
+        }
+        
+        for(int c=0;c<n;c++){
+            if(isPossibleToPlace(n,ansSoFar,r,c)){  
+                ansSoFar[r][c]='Q';
+                col[c]=1;                     //blocking the queen col
+                normalDiagonal[r+c]=1;       //blocking the queen both diagonals
+                reverseDiagonal[r-c+n-1]=1;
+                recBacktrack(n,ans,r+1,ansSoFar);
+                ansSoFar[r][c]='.';
+                col[c]=0;            //opening the queen col during backtrack
+                normalDiagonal[r+c]=0;    //opening the queen both diagonals during backtrack
+                reverseDiagonal[r-c+n-1]=0;
+            }
+        }
+        return;
+    }
+    private:  bool isPossibleToPlace(int n,vector<string> &ansSoFar,int r,int c ){
+      
+//         for(int i=0;i<r;i++){
+//             if(ansSoFar[i][c]=='Q') return 0;
+//         }
+        
+//         for(int i=r,j=c;i>=0&&j>=0;i--,j--){
+//             if(ansSoFar[i][j]=='Q') return 0;
+//         }
+//         for(int i=r,j=c;i>=0&&j<n;i--,j++){
+//             if(ansSoFar[i][j]=='Q') return 0;
+//         }
+        
+//         return 1;
+        
+        
+        //after optimization using branch and bound i.e. blocking ,we can clearly see how much time have reduced
+        if(col[c]==1||normalDiagonal[r+c]==1||reverseDiagonal[r-c+n-1]==1) return 0;
+        
+        return 1;
+    }
+    
+};
+
+
